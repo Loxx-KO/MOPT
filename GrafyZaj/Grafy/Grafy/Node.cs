@@ -8,35 +8,32 @@ using System.Xml.Linq;
 
 namespace Grafy
 {
-    class Node
+    public class Node
     {
-        public int Value;
-        public List<int> Neighbors;
+        public int Index { get; private set; }
+        public List<int> NeighborsIn;
+        public List<int> NeighborsOut;
         public Dictionary<int, int> EdgeValues;
 
-        public Node(int _value)
+        public Node(int _index)
         {
-            Value = _value;
-            Neighbors = new List<int>();
+            Index = _index;
+            NeighborsIn = new List<int>();
+            NeighborsOut = new List<int>();
             EdgeValues = new Dictionary<int, int>();
         }
 
-        public void SetValue(int _newVal)
+        public int GetNodeIndexInGraphList()
         {
-            Value = _newVal;
+            return Index - 1;
         }
 
-        public int GetValue()
-        {
-            return Value;
-        }
-
-        public void AddNeighbor(Node _neighbor, int _edgeValue)
+        public void AddNeighbor(Node _neighbor, bool directed, int _edgeValue)
         {
             bool alreadyANeighbor = false;
-            foreach (int node in Neighbors)
+            foreach (int node in NeighborsIn)
             {
-                if (_neighbor.GetValue() == node)
+                if (_neighbor.Index == node)
                 {
                     Console.WriteLine("Already a neighbor");
                     alreadyANeighbor = true;
@@ -46,27 +43,90 @@ namespace Grafy
 
             if (!alreadyANeighbor)
             {
-                Neighbors.Add(_neighbor.GetValue());
-                EdgeValues.Add(_neighbor.GetValue(), _edgeValue);
+                if (!directed) AddNeighborIn(_neighbor, _edgeValue);
+                else
+                {
+                    AddNeighborIn(_neighbor, _edgeValue);
+                    AddNeighborOut(_neighbor);
+                }
             }
         }
 
-        public void RemoveNeighbor(Node _neighbor)
+        private void AddNeighborIn(Node _neighbor, int _edgeValue)
         {
-            foreach (int node in Neighbors)
+            bool alreadyANeighbor = false;
+            foreach (int node in NeighborsIn)
             {
-                if (_neighbor.GetValue() == node)
+                if (_neighbor.Index == node)
                 {
-                    Neighbors.Remove(_neighbor.GetValue());
-                    EdgeValues.Remove(_neighbor.GetValue());
+                    Console.WriteLine("Already a neighbor");
+                    alreadyANeighbor = true;
+                    break;
+                }
+            }
+
+            if (!alreadyANeighbor)
+            {
+                NeighborsIn.Add(_neighbor.Index);
+                EdgeValues.Add(_neighbor.Index, _edgeValue);
+            }
+        }
+
+        private void AddNeighborOut(Node _neighbor)
+        {
+            bool alreadyANeighbor = false;
+            foreach (int node in NeighborsIn)
+            {
+                if (_neighbor.Index == node)
+                {
+                    Console.WriteLine("Already a neighbor");
+                    alreadyANeighbor = true;
+                    break;
+                }
+            }
+
+            if (!alreadyANeighbor)
+            {
+                NeighborsOut.Add(_neighbor.Index);
+            }
+        }
+
+        public void RemoveNeighbor(Node _neighbor, bool directed)
+        {
+            if(!directed)
+            {
+                RemoveNeighborIn(_neighbor);
+            }
+            else
+            {
+                RemoveNeighborIn(_neighbor);
+                RemoveNeighborOut(_neighbor);
+            }
+        }
+
+        public void RemoveNeighborIn(Node _neighbor)
+        {
+            foreach (int node in NeighborsIn)
+            {
+                if (_neighbor.Index == node)
+                {
+                    NeighborsIn.Remove(_neighbor.Index);
+                    EdgeValues.Remove(_neighbor.Index);
                     break;
                 }
             }
         }
 
-        public List<int> GetNeighbors()
+        public void RemoveNeighborOut(Node _neighbor)
         {
-            return Neighbors;
+            foreach (int node in NeighborsIn)
+            {
+                if (_neighbor.Index == node)
+                {
+                    NeighborsOut.Remove(_neighbor.Index);
+                    break;
+                }
+            }
         }
 
         /*public int GetNeighborValue()
@@ -88,9 +148,9 @@ namespace Grafy
             string values = " ";
 
             int iter = 0;
-            foreach (int node in Neighbors)
+            foreach (int node in NeighborsIn)
             {
-                if (iter != Neighbors.Count - 1) values += node + ", ";
+                if (iter != NeighborsIn.Count - 1) values += node + ", ";
                 else values += node;
 
                 iter++;
@@ -102,18 +162,18 @@ namespace Grafy
         public void ShowContents()
         {
             //Console.WriteLine("wierzchołek_początkowy wierzchołek_końcowy waga_krawędzi");
-            foreach (int neighbor in Neighbors)
+            foreach (int neighbor in NeighborsIn)
             {
-                Console.WriteLine(Value + " " + neighbor + " " + EdgeValues[neighbor]);
+                Console.WriteLine(Index + " " + neighbor + " " + EdgeValues[neighbor]);
             }
         }
 
         public string SaveFile()
         {
             string edges = "";
-            foreach (int neighbor in Neighbors)
+            foreach (int neighbor in NeighborsIn)
             {
-                edges += Value + " " + neighbor + " " + EdgeValues[neighbor] + "\n";
+                edges += Index + " " + neighbor + " " + EdgeValues[neighbor] + "\n";
             }
 
             return edges;

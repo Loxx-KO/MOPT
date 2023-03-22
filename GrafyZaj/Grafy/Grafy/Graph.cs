@@ -9,31 +9,46 @@ using System.Xml;
 
 namespace Grafy
 {
-    class Graph
+    public class Graph
     {
         private List<Node> nodes;
-        private bool twoSidedNeighbour;
+        private bool directed;
 
         public Graph()
         {
             nodes = new List<Node>();
         }
 
-        public Graph(bool _twoSideNeighbours)
+        public Graph(bool _directed)
         {
             nodes = new List<Node>();
-            twoSidedNeighbour = _twoSideNeighbours;
+            directed = _directed;
         }
 
-        public void AddNode(int _value)
+        public List<Node> GetNodeList()
+        {
+            return nodes;
+        }
+
+        public int GetNodeCount()
+        {
+            return nodes.Count;
+        }
+
+        public bool GetIfGraphIsDirected()
+        {
+            return directed;
+        }
+
+        public void AddNode(int _index)
         {
             if(nodes.Count == 0)
             {
-                nodes.Add(new Node(_value));
+                nodes.Add(new Node(_index));
             }
-            else if (FindNode(_value) == null)
+            else if (FindNode(_index) == null)
             {
-                nodes.Add(new Node(_value));
+                nodes.Add(new Node(_index));
             }
         }
 
@@ -41,7 +56,7 @@ namespace Grafy
         {
             foreach (Node node in nodes)
             {
-                if (_value == node.GetValue()) { nodes.Remove(node); break; }
+                if (_value == node.Index) { nodes.Remove(node); break; }
             }
         }
 
@@ -49,7 +64,7 @@ namespace Grafy
         {
             foreach (Node node in nodes)
             {
-                if (_value == node.GetValue()) return node;
+                if (_value == node.Index) return node;
             }
             return null;
         }
@@ -59,14 +74,15 @@ namespace Grafy
             Node neighborNode = FindNode(_neighbour);
             if (neighborNode != null && FindNode(_nodeValue) != null)
             {
-                if (twoSidedNeighbour)
+                if (!directed)
                 {
-                    nodes[_nodeValue - 1].AddNeighbor(neighborNode, _edgeValue);
-                    nodes[neighborNode.GetValue() - 1].AddNeighbor(nodes[_nodeValue - 1], _edgeValue);
+                    nodes[_nodeValue - 1].AddNeighbor(neighborNode, directed, _edgeValue);
+                    nodes[neighborNode.Index - 1].AddNeighbor(nodes[_nodeValue - 1], directed, _edgeValue);
                 }
                 else
                 {
-                    nodes[_nodeValue - 1].AddNeighbor(neighborNode, _edgeValue);
+                    nodes[_nodeValue - 1].AddNeighbor(neighborNode, directed, _edgeValue);
+                    //nodes[neighborNode.Index - 1].AddNeighborOut(nodes[_nodeValue - 1]);
                 }
             }
         }
@@ -76,27 +92,52 @@ namespace Grafy
             Node neighborNode = FindNode(_neighbour);
             if (neighborNode != null && FindNode(_nodeValue) != null)
             {
-                if (twoSidedNeighbour)
+                if (!directed)
                 {
-                    nodes[_nodeValue - 1].RemoveNeighbor(neighborNode);
-                    nodes[neighborNode.GetValue() - 1].RemoveNeighbor(nodes[_nodeValue - 1]);
+                    nodes[_nodeValue - 1].RemoveNeighbor(neighborNode, directed);
+                    nodes[neighborNode.Index - 1].RemoveNeighbor(nodes[_nodeValue - 1], directed);
                 }
                 else
                 {
-                    nodes[_nodeValue - 1].RemoveNeighbor(neighborNode);
+                    nodes[_nodeValue - 1].RemoveNeighbor(neighborNode, directed);
                 }
             }
         }
 
-        public void ShowGraph()
+        public Graph CopyGraph()
+        {
+            Graph copy = new Graph(directed);
+            foreach (Node node in nodes)
+            {
+                copy.AddNode(node.Index);
+            }
+            for(int i = 0; i < nodes.Count; i++)
+            {
+                copy.nodes[i].NeighborsIn = new List<int>(nodes[i].NeighborsIn);
+                copy.nodes[i].NeighborsOut = new List<int>(nodes[i].NeighborsOut);
+                copy.nodes[i].EdgeValues = new Dictionary<int, int>(nodes[i].EdgeValues);
+            }
+
+            return copy;
+        }
+
+        public void ShowGraphByFileFormat()
         {
             Console.WriteLine("#DIGRAPH");
-            Console.WriteLine(twoSidedNeighbour);
+            Console.WriteLine(directed);
             Console.WriteLine("#EDGES");
 
             foreach (Node node in nodes)
             {
                 node.ShowContents();
+            }
+        }
+
+        public void ShowGraphByNodes()
+        {
+            foreach (Node node in nodes)
+            {
+                Console.WriteLine("Node: " + node.Index + " # Neighbors: " + node.GetNeighborsValues());
             }
         }
 
@@ -109,8 +150,8 @@ namespace Grafy
                 {
                     if (cnt == 1)
                     {
-                        if (line == "false") twoSidedNeighbour = false;
-                        else if (line == "true") twoSidedNeighbour = true;
+                        if (line == "false") directed = false;
+                        else if (line == "true") directed = true;
                     }
                     else 
                     {
@@ -131,7 +172,7 @@ namespace Grafy
         public void SaveFile(string filepath)
         {
             string text = "#DIGRAPH\n";
-            text += twoSidedNeighbour.ToString() + "\n#EDGES\n";
+            text += directed.ToString() + "\n#EDGES\n";
             
             foreach(Node node in nodes)
             {
