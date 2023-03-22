@@ -35,71 +35,73 @@ namespace Grafy
             return nodes.Count;
         }
 
-        public bool GetIfGraphIsDirected()
+        public bool IsGraphIsDirected()
         {
             return directed;
         }
 
-        public void AddNode(int _index)
+        public void AddNode(int _nodeNumber)
         {
-            if(nodes.Count == 0)
+            if (nodes.Count == 0)
             {
-                nodes.Add(new Node(_index));
+                nodes.Add(new Node(_nodeNumber));
             }
-            else if (FindNode(_index) == null)
+            else if (FindNode(_nodeNumber) == null)
             {
-                nodes.Add(new Node(_index));
-            }
-        }
-
-        public void RemoveNode(int _value)
-        {
-            foreach (Node node in nodes)
-            {
-                if (_value == node.Index) { nodes.Remove(node); break; }
+                nodes.Add(new Node(_nodeNumber));
             }
         }
 
-        public Node FindNode(int _value)
+        public void RemoveNode(int _nodeNumber)
         {
             foreach (Node node in nodes)
             {
-                if (_value == node.Index) return node;
+                if (_nodeNumber == node.NodeNumber) { nodes.Remove(node); break; }
+            }
+        }
+
+        public Node FindNode(int _nodeNumber)
+        {
+            foreach (Node node in nodes)
+            {
+                if (_nodeNumber == node.NodeNumber) return node;
             }
             return null;
         }
 
-        public void AddNeighbour(int _nodeValue, int _neighbour, int _edgeValue = 0)
+        public void AddNeighbor(int _nodeIndex, int _neighbour, int _edgeValue = 0)
         {
             Node neighborNode = FindNode(_neighbour);
-            if (neighborNode != null && FindNode(_nodeValue) != null)
+            if (neighborNode != null && FindNode(_nodeIndex) != null)
             {
                 if (!directed)
                 {
-                    nodes[_nodeValue - 1].AddNeighbor(neighborNode, directed, _edgeValue);
-                    nodes[neighborNode.Index - 1].AddNeighbor(nodes[_nodeValue - 1], directed, _edgeValue);
+                    nodes[_nodeIndex - 1].AddNeighbor(neighborNode, _edgeValue);
+                    nodes[neighborNode.NodeNumber - 1].AddNeighbor(nodes[_nodeIndex - 1], _edgeValue);
+                    nodes[_nodeIndex - 1].NumberOfNodesPointingToThisNode++;
+                    nodes[neighborNode.NodeNumber - 1].NumberOfNodesPointingToThisNode++;
                 }
                 else
                 {
-                    nodes[_nodeValue - 1].AddNeighbor(neighborNode, directed, _edgeValue);
-                    //nodes[neighborNode.Index - 1].AddNeighborOut(nodes[_nodeValue - 1]);
+                    nodes[_nodeIndex - 1].AddNeighbor(neighborNode, _edgeValue);
+                    nodes[neighborNode.NodeNumber - 1].NumberOfNodesPointingToThisNode++;
                 }
             }
         }
 
-        public void RemoveNeighbour(int _nodeValue, int _neighbour)
+        public void RemoveNeighbor(int _nodeValue, int _neighbour)
         {
             Node neighborNode = FindNode(_neighbour);
             if (neighborNode != null && FindNode(_nodeValue) != null)
             {
                 if (!directed)
                 {
-                    nodes[_nodeValue - 1].RemoveNeighbor(neighborNode, directed);
-                    nodes[neighborNode.Index - 1].RemoveNeighbor(nodes[_nodeValue - 1], directed);
+                    nodes[_nodeValue - 1].RemoveNeighbor(neighborNode);
+                    nodes[neighborNode.NodeNumber - 1].RemoveNeighbor(nodes[_nodeValue - 1]);
                 }
                 else
                 {
-                    nodes[_nodeValue - 1].RemoveNeighbor(neighborNode, directed);
+                    nodes[_nodeValue - 1].RemoveNeighbor(neighborNode);
                 }
             }
         }
@@ -109,12 +111,12 @@ namespace Grafy
             Graph copy = new Graph(directed);
             foreach (Node node in nodes)
             {
-                copy.AddNode(node.Index);
+                copy.AddNode(node.NodeNumber);
             }
             for(int i = 0; i < nodes.Count; i++)
             {
-                copy.nodes[i].NeighborsIn = new List<int>(nodes[i].NeighborsIn);
-                copy.nodes[i].NeighborsOut = new List<int>(nodes[i].NeighborsOut);
+                copy.nodes[i].Neighbors = new List<int>(nodes[i].Neighbors);
+                copy.nodes[i].NumberOfNodesPointingToThisNode = nodes[i].NumberOfNodesPointingToThisNode;
                 copy.nodes[i].EdgeValues = new Dictionary<int, int>(nodes[i].EdgeValues);
             }
 
@@ -137,7 +139,7 @@ namespace Grafy
         {
             foreach (Node node in nodes)
             {
-                Console.WriteLine("Node: " + node.Index + " # Neighbors: " + node.GetNeighborsValues());
+                Console.WriteLine("Node: " + node.NodeNumber + " # Neighbors: " + node.GetNeighborsValues());
             }
         }
 
@@ -158,12 +160,27 @@ namespace Grafy
                         string[] values = line.Split(" ");
                         int begin = int.Parse(values[0]);
                         int end = int.Parse(values[1]);
-                        int edge = int.Parse(values[2]);
 
                         AddNode(begin);
                         AddNode(end);
-                        AddNeighbour(begin, end, edge);
                     }
+                }
+                cnt++;
+            }
+
+            nodes = nodes.OrderBy(x => x.NodeNumber).ToList();
+
+            cnt = 0;
+            foreach (string line in System.IO.File.ReadLines(filepath))
+            {
+                if (cnt > 3)
+                {
+                    string[] values = line.Split(" ");
+                    int begin = int.Parse(values[0]);
+                    int end = int.Parse(values[1]);
+                    int edge = int.Parse(values[2]);
+
+                    AddNeighbor(begin, end, edge);
                 }
                 cnt++;
             }

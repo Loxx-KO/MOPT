@@ -4,7 +4,7 @@ namespace Grafy
 {
     class Program
     {
-        public static string fileName = "data_standard.txt";
+        public static string fileName = "euler-yes.txt";
         public static string fileName2 = "data_standard_out.txt";
         static void Main(string[] args)
         {

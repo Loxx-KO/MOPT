@@ -10,32 +10,27 @@ namespace Grafy
 {
     public class Node
     {
-        public int Index { get; private set; }
-        public List<int> NeighborsIn;
-        public List<int> NeighborsOut;
+        public int NodeNumber { get; private set; }
+        public List<int> Neighbors;
         public Dictionary<int, int> EdgeValues;
+        public int NumberOfNodesPointingToThisNode = 0;
 
-        public Node(int _index)
+        public Node(int _nodeNumber)
         {
-            Index = _index;
-            NeighborsIn = new List<int>();
-            NeighborsOut = new List<int>();
+            NodeNumber = _nodeNumber;
+            Neighbors = new List<int>();
+            NumberOfNodesPointingToThisNode = 0;
             EdgeValues = new Dictionary<int, int>();
         }
 
-        public int GetNodeIndexInGraphList()
-        {
-            return Index - 1;
-        }
-
-        public void AddNeighbor(Node _neighbor, bool directed, int _edgeValue)
+        public void AddNeighbor(Node _neighbor, int _edgeValue)
         {
             bool alreadyANeighbor = false;
-            foreach (int node in NeighborsIn)
+            foreach (int node in Neighbors)
             {
-                if (_neighbor.Index == node)
+                if (_neighbor.NodeNumber == node)
                 {
-                    Console.WriteLine("Already a neighbor");
+                    //Console.WriteLine("Already a neighbor");
                     alreadyANeighbor = true;
                     break;
                 }
@@ -43,114 +38,32 @@ namespace Grafy
 
             if (!alreadyANeighbor)
             {
-                if (!directed) AddNeighborIn(_neighbor, _edgeValue);
-                else
-                {
-                    AddNeighborIn(_neighbor, _edgeValue);
-                    AddNeighborOut(_neighbor);
-                }
+                Neighbors.Add(_neighbor.NodeNumber);
+                EdgeValues.Add(_neighbor.NodeNumber, _edgeValue);
             }
         }
 
-        private void AddNeighborIn(Node _neighbor, int _edgeValue)
+        public void RemoveNeighbor(Node _neighbor)
         {
-            bool alreadyANeighbor = false;
-            foreach (int node in NeighborsIn)
+            foreach (int node in Neighbors)
             {
-                if (_neighbor.Index == node)
+                if (_neighbor.NodeNumber == node)
                 {
-                    Console.WriteLine("Already a neighbor");
-                    alreadyANeighbor = true;
-                    break;
-                }
-            }
-
-            if (!alreadyANeighbor)
-            {
-                NeighborsIn.Add(_neighbor.Index);
-                EdgeValues.Add(_neighbor.Index, _edgeValue);
-            }
-        }
-
-        private void AddNeighborOut(Node _neighbor)
-        {
-            bool alreadyANeighbor = false;
-            foreach (int node in NeighborsIn)
-            {
-                if (_neighbor.Index == node)
-                {
-                    Console.WriteLine("Already a neighbor");
-                    alreadyANeighbor = true;
-                    break;
-                }
-            }
-
-            if (!alreadyANeighbor)
-            {
-                NeighborsOut.Add(_neighbor.Index);
-            }
-        }
-
-        public void RemoveNeighbor(Node _neighbor, bool directed)
-        {
-            if(!directed)
-            {
-                RemoveNeighborIn(_neighbor);
-            }
-            else
-            {
-                RemoveNeighborIn(_neighbor);
-                RemoveNeighborOut(_neighbor);
-            }
-        }
-
-        public void RemoveNeighborIn(Node _neighbor)
-        {
-            foreach (int node in NeighborsIn)
-            {
-                if (_neighbor.Index == node)
-                {
-                    NeighborsIn.Remove(_neighbor.Index);
-                    EdgeValues.Remove(_neighbor.Index);
+                    Neighbors.Remove(_neighbor.NodeNumber);
+                    EdgeValues.Remove(_neighbor.NodeNumber);
                     break;
                 }
             }
         }
-
-        public void RemoveNeighborOut(Node _neighbor)
-        {
-            foreach (int node in NeighborsIn)
-            {
-                if (_neighbor.Index == node)
-                {
-                    NeighborsOut.Remove(_neighbor.Index);
-                    break;
-                }
-            }
-        }
-
-        /*public int GetNeighborValue()
-        {
-            int NeighbourValue = 0;
-            foreach (Node node in neighbours)
-            {
-                NeighbourValue = node.GetValue();
-                break;
-            }
-
-            if (NeighbourValue == 0) Console.WriteLine("Neighbor does not exist\n");
-
-            return NeighbourValue;
-        }*/
 
         public string GetNeighborsValues()
         {
             string values = " ";
 
             int iter = 0;
-            foreach (int node in NeighborsIn)
+            foreach (int node in Neighbors)
             {
-                if (iter != NeighborsIn.Count - 1) values += node + ", ";
+                if (iter != Neighbors.Count - 1) values += node + ", ";
                 else values += node;
 
                 iter++;
@@ -161,19 +74,20 @@ namespace Grafy
 
         public void ShowContents()
         {
-            //Console.WriteLine("wierzchołek_początkowy wierzchołek_końcowy waga_krawędzi");
-            foreach (int neighbor in NeighborsIn)
+            Console.WriteLine("wierzchołek_początkowy wierzchołek_końcowy waga_krawędzi");
+            foreach (int neighbor in Neighbors)
             {
-                Console.WriteLine(Index + " " + neighbor + " " + EdgeValues[neighbor]);
+                Console.WriteLine(NodeNumber + " " + neighbor + " " + EdgeValues[neighbor]);
             }
+            Console.WriteLine();
         }
 
         public string SaveFile()
         {
             string edges = "";
-            foreach (int neighbor in NeighborsIn)
+            foreach (int neighbor in Neighbors)
             {
-                edges += Index + " " + neighbor + " " + EdgeValues[neighbor] + "\n";
+                edges += NodeNumber + " " + neighbor + " " + EdgeValues[neighbor] + "\n";
             }
 
             return edges;

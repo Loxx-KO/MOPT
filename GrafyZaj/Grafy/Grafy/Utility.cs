@@ -29,18 +29,18 @@ namespace Grafy
                 stack.Pop();
                 visitedCount++;
 
-                foreach(int neighbor in graph.FindNode(curr.Index).NeighborsIn)
+                foreach(int neighbor in graph.FindNode(curr.NodeNumber).Neighbors)
                 {
                     Node tmp = graph.FindNode(neighbor);
-                    if (visited[tmp.GetNodeIndexInGraphList()] == false)
+                    if (visited[tmp.NodeNumber - 1] == false)
                     {
-                        visited[tmp.GetNodeIndexInGraphList()] = true;
+                        visited[tmp.NodeNumber - 1] = true;
                         stack.Push(tmp);
                     }
                 }
             }
 
-            Console.WriteLine(visitedCount);
+            //Console.WriteLine(visitedCount);
 
             if (visitedCount == graph.GetNodeCount()) return true;
             else return false;

@@ -23,14 +23,14 @@ namespace Grafy
                 return;
             }
 
-            if(graph.GetIfGraphIsDirected()) 
+            if(graph.IsGraphIsDirected()) 
             {
                 Console.WriteLine("skierowany i spojny");
                 foreach (Node node in graph.GetNodeList())
                 {
-                    if(node.NeighborsIn.Count != node.NeighborsOut.Count)
+                    if(node.Neighbors.Count != node.NumberOfNodesPointingToThisNode)
                     {
-                        Console.WriteLine("Wierzcholek " + node.Index + " Ma inna liczbe krawedzi wchodzacych i wychodzacych!");
+                        Console.WriteLine("Wierzcholek " + node.NodeNumber + " Ma inna liczbe krawedzi wchodzacych i wychodzacych!");
                         return;
                     }
                 }
@@ -40,9 +40,9 @@ namespace Grafy
                 Console.WriteLine("nieskierowany i spojny");
                 foreach(Node node in graph.GetNodeList())
                 {
-                    if(node.NeighborsIn.Count % 2 != 0)
+                    if(node.Neighbors.Count % 2 != 0)
                     {
-                        Console.WriteLine("Nieparzysta liczba krawedzi z wierzcholka " + node.Index + "! Graf nie spelnia warunkow.");
+                        Console.WriteLine("Nieparzysta liczba krawedzi z wierzcholka " + node.NodeNumber + "! Graf nie spelnia warunkow.");
                         return;
                     }
                 }
@@ -56,10 +56,10 @@ namespace Grafy
 
             while (stack.Count != 0)
             {
-                if (current.NeighborsIn.Count != 0)
+                if (current.Neighbors.Count != 0)
                 {
-                    Node next = copyGraph.FindNode(current.NeighborsIn.Min());
-                    copyGraph.RemoveNeighbour(next.Index, current.Index);
+                    Node next = copyGraph.FindNode(current.Neighbors.First());
+                    copyGraph.RemoveNeighbor(next.NodeNumber, current.NodeNumber);
                     current = next;
                     stack.Push(current);
                 }
@@ -75,7 +75,7 @@ namespace Grafy
             string cycleResult = "";
             foreach(Node node in cycle)
             {
-                cycleResult += node.Index + " ";
+                cycleResult += node.NodeNumber + " ";
             }
             Console.WriteLine("Cykl: " + cycleResult);
         }
