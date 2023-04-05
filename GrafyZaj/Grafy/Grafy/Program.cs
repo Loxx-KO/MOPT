@@ -11,8 +11,9 @@ namespace Grafy
             Graph graph1 = new Graph();
             graph1.ReadFile(fileName);
             graph1.ShowGraphByNodes();
-            Euler.EulerMethod(graph1);
-            //graph1.SaveFile(fileName2);
+            //Euler.EulerMethod(graph1);
+            MaximumAssociation.MaxAssociationAlgorithm(graph1);
+            //HungarianAlgorith.HungarianAlgorithm(graph1);
         }
     }
 }

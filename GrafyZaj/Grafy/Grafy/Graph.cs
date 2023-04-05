@@ -108,18 +108,24 @@ namespace Grafy
 
         public Graph CopyGraph()
         {
-            Graph copy = new Graph(directed);
-            foreach (Node node in nodes)
-            {
-                copy.AddNode(node.NodeNumber);
-            }
-            for(int i = 0; i < nodes.Count; i++)
+            Graph copy = CopyGraphNodes();
+            for (int i = 0; i < nodes.Count; i++)
             {
                 copy.nodes[i].Neighbors = new List<int>(nodes[i].Neighbors);
                 copy.nodes[i].NumberOfNodesPointingToThisNode = nodes[i].NumberOfNodesPointingToThisNode;
                 copy.nodes[i].EdgeValues = new Dictionary<int, int>(nodes[i].EdgeValues);
             }
 
+            return copy;
+        }
+
+        public Graph CopyGraphNodes()
+        {
+            Graph copy = new Graph(directed);
+            foreach (Node node in nodes)
+            {
+                copy.AddNode(node.NodeNumber);
+            }
             return copy;
         }
 
@@ -139,7 +145,7 @@ namespace Grafy
         {
             foreach (Node node in nodes)
             {
-                Console.WriteLine("Node: " + node.NodeNumber + " # Neighbors: " + node.GetNeighborsValues());
+                Console.WriteLine("Node: " + node.NodeNumber + " # Neighbors: " + node.GetNeighborsValues() + " Value: " + node.Value);
             }
         }
 
@@ -173,7 +179,7 @@ namespace Grafy
             cnt = 0;
             foreach (string line in System.IO.File.ReadLines(filepath))
             {
-                if (cnt > 3)
+                if (cnt > 2)
                 {
                     string[] values = line.Split(" ");
                     int begin = int.Parse(values[0]);

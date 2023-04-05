@@ -14,6 +14,7 @@ namespace Grafy
         public List<int> Neighbors;
         public Dictionary<int, int> EdgeValues;
         public int NumberOfNodesPointingToThisNode = 0;
+        public int Value = 0;
 
         public Node(int _nodeNumber)
         {
@@ -77,7 +78,7 @@ namespace Grafy
             Console.WriteLine("wierzchołek_początkowy wierzchołek_końcowy waga_krawędzi");
             foreach (int neighbor in Neighbors)
             {
-                Console.WriteLine(NodeNumber + " " + neighbor + " " + EdgeValues[neighbor]);
+                Console.WriteLine(NodeNumber + " " + neighbor + " " + EdgeValues[neighbor] + " " + Value);
             }
             Console.WriteLine();
         }

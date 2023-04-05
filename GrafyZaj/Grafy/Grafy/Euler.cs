@@ -9,12 +9,7 @@ namespace Grafy
 {
     public class Euler
     {
-        public static Node SelectRandomPoint(Graph graph)
-        {
-            var random = new Random();
-            Node choosenNode = graph.GetNodeList()[random.Next(graph.GetNodeCount())];
-            return choosenNode;
-        }
+
         public static void EulerMethod(Graph graph)
         {
             if (!Utility.CheckIfGraphIsConsistent(graph)) 
@@ -49,7 +44,7 @@ namespace Grafy
             }
 
             Graph copyGraph = graph.CopyGraph();
-            Node current = SelectRandomPoint(copyGraph);
+            Node current = Utility.SelectRandomPoint(copyGraph);
             Stack<Node> stack = new Stack<Node>();
             Stack<Node> cycle = new Stack<Node>();
             stack.Push(current);
