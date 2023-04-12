@@ -28,13 +28,13 @@ namespace Grafy
 
             List<int> mathing = new List<int>(nodesInGraph);
             List<bool> visited = new List<bool>(nodesInGraph);
-            List<int> augment = new List<int>(nodesInGraph);
+            List<int> tmpMatching = new List<int>(nodesInGraph);
 
             for (int i = 0; i < nodesInGraph; i++)
             {
                 mathing.Add(-1);
                 visited.Add(false);
-                augment.Add(0);
+                tmpMatching.Add(0);
             }
             Queue<Node> queue = new Queue<Node>();
 
@@ -48,7 +48,7 @@ namespace Grafy
                     queue.Clear();
 
                     visited[i] = true;
-                    augment[i] = -1;
+                    tmpMatching[i] = -1;
                     queue.Enqueue(nodes[i]);
 
                     while (queue.Count != 0)
@@ -60,24 +60,24 @@ namespace Grafy
                         {
                             if (mathing[curr.NodeNumber - 1] == -1)  //if kawaler wolny
                             {
-                                while (augment[curr.NodeNumber - 1] > -1)
+                                while (tmpMatching[curr.NodeNumber - 1] > -1)
                                 {
                                     if (curr.Value == -1)
                                     {
                                         //zamiana krawedzi skojarzonych na nieskojarzone
-                                        mathing[curr.NodeNumber - 1] = augment[curr.NodeNumber - 1];
-                                        mathing[augment[curr.NodeNumber - 1]] = curr.NodeNumber-1;
+                                        mathing[curr.NodeNumber - 1] = tmpMatching[curr.NodeNumber - 1];
+                                        mathing[tmpMatching[curr.NodeNumber - 1]] = curr.NodeNumber-1;
                                     }
-                                    curr = nodes[augment[curr.NodeNumber - 1]];
+                                    curr = nodes[tmpMatching[curr.NodeNumber - 1]];
                                 }
                                 break;
                             }
                             else
                             {
                                 // Kawaler skojarzony
-                                augment[mathing[curr.NodeNumber - 1]] = curr.NodeNumber-1;
+                                tmpMatching[mathing[curr.NodeNumber - 1]] = curr.NodeNumber-1;
                                 visited[mathing[curr.NodeNumber - 1]] = true;
-                                queue.Enqueue(nodes[mathing[curr.NodeNumber - 1]]); // W kolejce umieszczamy skojarzoną pannę
+                                queue.Enqueue(nodes[mathing[curr.NodeNumber - 1]]); // W kolejce umieszczamy skojarzoną pannę 
                             }
                         }
                         else //panna czerwona (1)
@@ -88,7 +88,7 @@ namespace Grafy
                                 if (visited[tmp.NodeNumber - 1] == false) // kawaler nieskojarzony
                                 {
                                     visited[tmp.NodeNumber - 1] = true;
-                                    augment[tmp.NodeNumber - 1] = curr.NodeNumber-1;
+                                    tmpMatching[tmp.NodeNumber - 1] = curr.NodeNumber-1;
                                     queue.Enqueue(tmp);
                                 }
                             }

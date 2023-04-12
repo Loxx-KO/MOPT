@@ -111,5 +111,51 @@ namespace Grafy
 
             return true;
         }
+
+        public static int[,] GraphTo2D_Matrix(List<Node> v1, List<Node> v2)
+        {
+            int[,] matrix = new int[v1.Count, v2.Count];
+
+            for(int i = 0 ; i < v1.Count; i++)
+            {
+                for (int j = 0; j < v2.Count; j++)
+                {
+                    matrix[i, j] = 0;
+                }
+            }
+
+            int it = 0;
+            int minV2Value = v2[0].NodeNumber-1;
+            foreach (Node node in v1) 
+            {
+                foreach(int neighbor in node.Neighbors) 
+                {
+                    matrix[((neighbor-1) - minV2Value), it] = node.EdgeValues[neighbor];
+                }
+                it++;
+            }
+
+            return matrix;
+        }
+
+        public static void Show2D_Matrix(int[,] matrix, List<Node> v1, List<Node> v2)
+        {
+            Console.Write("# ");
+            for (int j = 0; j < v2.Count; j++)
+            {
+                Console.Write(v2[j].NodeNumber + " ");
+            }
+            Console.WriteLine();
+
+            for (int i = 0; i < v1.Count; i++)
+            {
+                Console.Write(v1[i].NodeNumber + " ");
+                for (int j = 0; j < v2.Count; j++)
+                {
+                    Console.Write(matrix[i, j] + " ");
+                }
+                Console.WriteLine();
+            }
+        }
     }
 }
