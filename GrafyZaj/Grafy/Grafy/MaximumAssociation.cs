@@ -22,96 +22,125 @@ namespace Grafy
                 return;
             }
 
-            int nodesInGraph = copyGraph.GetNodeCount();
-            List<Node> nodes = copyGraph.GetNodeList();
-            Node curr;
+            Dictionary<int, int> match = new Dictionary<int, int>();
 
-            List<int> mathing = new List<int>(nodesInGraph);
-            List<bool> visited = new List<bool>(nodesInGraph);
-            List<int> tmpMatching = new List<int>(nodesInGraph);
-
-            for (int i = 0; i < nodesInGraph; i++)
+            for (int i = 0; i < copyGraph.GetNodeCount(); i++)
             {
-                mathing.Add(-1);
-                visited.Add(false);
-                tmpMatching.Add(0);
+                match.Add((i+1),0);
             }
-            Queue<Node> queue = new Queue<Node>();
 
-            // kawaler niebieski = -1, panna czerwony = 1
+            int expo = copyGraph.GetNodeCount();
 
-            for (int i = 0; i < nodesInGraph; i++)
+            /*for(int i = 0; i < copyGraph.GetNodeCount(); i++) 
             {
-                if ((mathing[i] == -1) && nodes[i].Value == 1)
+                if (beginMatch[i] == 0)
                 {
-                    for (int j = 0; j < nodesInGraph; j++) visited[j] = false;
-                    queue.Clear();
-
-                    visited[i] = true;
-                    tmpMatching[i] = -1;
-                    queue.Enqueue(nodes[i]);
-
-                    while (queue.Count != 0)
+                    foreach(int neighbor in copyGraph.GetNodeList()[i].Neighbors)
                     {
-                        curr = queue.First();
-                        queue.Dequeue();
-
-                        if(curr.Value == -1) //if kawalerowie niebiescy (-1)
+                        if (beginMatch[neighbor-1] == 0)
                         {
-                            if (mathing[curr.NodeNumber - 1] == -1)  //if kawaler wolny
-                            {
-                                while (tmpMatching[curr.NodeNumber - 1] > -1)
-                                {
-                                    if (curr.Value == -1)
-                                    {
-                                        //zamiana krawedzi skojarzonych na nieskojarzone
-                                        mathing[curr.NodeNumber - 1] = tmpMatching[curr.NodeNumber - 1];
-                                        mathing[tmpMatching[curr.NodeNumber - 1]] = curr.NodeNumber-1;
-                                    }
-                                    curr = nodes[tmpMatching[curr.NodeNumber - 1]];
-                                }
-                                break;
-                            }
-                            else
-                            {
-                                // Kawaler skojarzony
-                                tmpMatching[mathing[curr.NodeNumber - 1]] = curr.NodeNumber-1;
-                                visited[mathing[curr.NodeNumber - 1]] = true;
-                                queue.Enqueue(nodes[mathing[curr.NodeNumber - 1]]); // W kolejce umieszczamy skojarzoną pannę 
-                            }
+                            beginMatch[neighbor-1] = i+1;
+                            beginMatch[i] = neighbor;
+                            match.Add(i, neighbor);
+                            expo -= 2;
+                            break;
                         }
-                        else //panna czerwona (1)
+                    }
+                }
+            }*/
+
+            for (int i = 0; i < copyGraph.GetNodeCount(); i++)
+            {
+                if (match[i+1] == 0)
+                {
+                    foreach (int neighbor in copyGraph.GetNodeList()[i].Neighbors)
+                    {
+                        if (match[neighbor] == 0)
                         {
-                            foreach (int neighbor in copyGraph.FindNode(curr.NodeNumber).Neighbors)
-                            {
-                                Node tmp = copyGraph.FindNode(neighbor);
-                                if (visited[tmp.NodeNumber - 1] == false) // kawaler nieskojarzony
-                                {
-                                    visited[tmp.NodeNumber - 1] = true;
-                                    tmpMatching[tmp.NodeNumber - 1] = curr.NodeNumber-1;
-                                    queue.Enqueue(tmp);
-                                }
-                            }
+                            match[i+1] = neighbor;
+                            match[neighbor] = i + 1;
+                            expo -= 2;
+                            break;
                         }
                     }
                 }
             }
 
-            Console.WriteLine("Skojarzenia czerwony(panna) --- niebieski(kawaler)");
-            for (int i = 0; i < nodesInGraph; i++)
+            int maxAssociationCount = 0;
+
+            List<Node> v1 = new List<Node>();
+            List<Node> v2 = new List<Node>();
+            List<Node> free_v1 = new List<Node>();
+            List<Node> free_v2 = new List<Node>();
+
+            Console.WriteLine("Skojarzenie poczatkowe");
+            for (int i = 0; i < copyGraph.GetNodeCount(); i++)
             {
-                if (nodes[i].Value == -1)
+                if (copyGraph.GetNodeList()[i].Value == 1)
                 {
-                    Console.WriteLine("# " + (i+1) + " --> " + (mathing[i]+1));
+                    Console.WriteLine(match.Keys.ToList()[i] + " --> " + match[i + 1]);
+
+                    if (match[i + 1] != 0)
+                    {
+                        v1.Add(copyGraph.GetNodeList()[i]);
+                        maxAssociationCount++; 
+                    }
+                    else free_v1.Add(copyGraph.GetNodeList()[i]);
+                }
+                else
+                {
+                    if (match[i + 1] != 0) v2.Add(copyGraph.GetNodeList()[i]);
+                    else free_v2.Add(copyGraph.GetNodeList()[i]);
                 }
             }
 
-            Console.WriteLine("Sciezka rozszerzajaca");
-            for (int i = 0; i < nodesInGraph; i++)
+            Console.WriteLine("V1: ");
+            Utility.PrintNodeList(v1);
+
+            Console.WriteLine("V2: ");
+            Utility.PrintNodeList(v2);
+
+            Console.WriteLine("V1': ");
+            Utility.PrintNodeList(free_v1);
+
+            Console.WriteLine("V2': ");
+            Utility.PrintNodeList(free_v2);
+
+            if (free_v1.Count > 0 && free_v2.Count > 0)
             {
-                if (nodes[i].Value == 1)
+                List<int> path = Utility.FindPath(copyGraph, free_v1.First().NodeNumber, free_v2.First().NodeNumber);
+
+                while (path.Count > 0)
                 {
-                    Console.Write(" " + (i + 1) + " --> " + (mathing[i] + 1) + " --> ");
+                    for (int i = 0; i < path.Count; i++)
+                    {
+                        if (i % 2 == 0) match[path[i]] = path[i + 1];
+                    }
+                    //PrintMatches(match, copyGraph);
+
+                    free_v1.RemoveAt(0);
+                    free_v2.RemoveAt(0);
+
+                    if (free_v1.Count > 0 && free_v2.Count > 0)
+                    {
+                        path = Utility.FindPath(copyGraph, free_v1.First().NodeNumber, free_v2.First().NodeNumber);
+                    }
+                    else break;
+                }
+            }
+
+            Console.WriteLine("Skojarzenie maksymalne: ");
+            PrintMatches(match, copyGraph);
+        }
+
+        private static void PrintMatches(Dictionary<int, int> match, Graph copyGraph)
+        {
+            Console.WriteLine();
+            for (int i = 0; i < copyGraph.GetNodeCount(); i++)
+            {
+                if (copyGraph.GetNodeList()[i].Value == 1)
+                {
+                    Console.WriteLine(match.Keys.ToList()[i] + " --> " + match[i + 1]);
                 }
             }
         }
