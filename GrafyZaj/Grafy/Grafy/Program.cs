@@ -4,7 +4,7 @@ namespace Grafy
 {
     class Program
     {
-        public static string fileName = "euler-yes.txt";
+        public static string fileName = "colorGraph.txt";
         public static string fileName2 = "data_standard_out.txt";
         static void Main(string[] args)
         {
@@ -12,8 +12,9 @@ namespace Grafy
             graph1.ReadFile(fileName);
             graph1.ShowGraphByNodes();
             //Euler.EulerMethod(graph1);
-            MaximumAssociation.MaxAssociationAlgorithm(graph1);
+            //MaximumAssociation.MaxAssociationAlgorithm(graph1);
             //HungarianAlgorith.HungarianAlgorithm(graph1);
+            ColorGraph.ColorGraphApprox(graph1);
         }
     }
 }

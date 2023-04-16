@@ -31,24 +31,6 @@ namespace Grafy
 
             int expo = copyGraph.GetNodeCount();
 
-            /*for(int i = 0; i < copyGraph.GetNodeCount(); i++) 
-            {
-                if (beginMatch[i] == 0)
-                {
-                    foreach(int neighbor in copyGraph.GetNodeList()[i].Neighbors)
-                    {
-                        if (beginMatch[neighbor-1] == 0)
-                        {
-                            beginMatch[neighbor-1] = i+1;
-                            beginMatch[i] = neighbor;
-                            match.Add(i, neighbor);
-                            expo -= 2;
-                            break;
-                        }
-                    }
-                }
-            }*/
-
             for (int i = 0; i < copyGraph.GetNodeCount(); i++)
             {
                 if (match[i+1] == 0)
