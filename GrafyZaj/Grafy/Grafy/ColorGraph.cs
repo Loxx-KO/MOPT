@@ -27,9 +27,56 @@ namespace Grafy
             {
                 color.Add(0);
             }
-            Node curr;
 
-            int colorCount = 0; //bc
+            Graph tmp = copyGraph.CopyGraph();
+            Node curr = tmp.GetNodeList()[0];
+            int coloredCount = 0;
+            int currentColor = 1;
+
+            while(coloredCount < nodesInGraph) 
+            {
+                curr = tmp.GetNodeList()[0];
+                for (int i = 0; i < tmp.GetNodeCount(); i++)
+                {
+                    if (tmp.GetNodeList()[i].Value == 0)
+                    {
+                        curr = tmp.GetNodeList()[i];
+                        break;
+                    }
+                }
+
+                if (curr.Value == 0) 
+                {
+                    curr.Value = currentColor;
+                    copyGraph.GetNodeList()[curr.NodeNumber - 1].Value = currentColor;
+                    foreach (int neighbor in copyGraph.FindNode(curr.NodeNumber).Neighbors)
+                    {
+                        if (tmp.FindNode(neighbor) != null)
+                        {
+                            tmp.RemoveNode(neighbor);
+                        }
+                    }
+                    tmp.RemoveNode(curr.NodeNumber);
+                    coloredCount++;
+                }
+                else
+                {
+                    tmp.RemoveNode(curr.NodeNumber);
+                }
+
+                if (tmp.GetNodeList().Count == 0)
+                {
+                    currentColor++;
+                    tmp = copyGraph.CopyGraph();
+                }
+            }
+
+            Console.WriteLine("Result: ");
+            for (int i = 0; i < nodesInGraph; i++)
+            {
+                Console.WriteLine((i + 1) + " color: " + copyGraph.GetNodeList()[i].Value);
+            }
+            /*int colorCount = 0; //bc
             int colors = 2; //b
             bool test;
 
@@ -75,7 +122,7 @@ namespace Grafy
             for (int i = 0; i < nodesInGraph; i++)
             {
                 Console.WriteLine((i + 1) + " color: " + color[i]);
-            }
+            }*/
         }
     }
 }

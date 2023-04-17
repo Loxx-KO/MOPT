@@ -56,7 +56,15 @@ namespace Grafy
         {
             foreach (Node node in nodes)
             {
-                if (_nodeNumber == node.NodeNumber) { nodes.Remove(node); break; }
+                if (_nodeNumber == node.NodeNumber) 
+                {
+                    /*foreach (int neighbor in FindNode(node.NodeNumber).Neighbors)
+                    {
+                        nodes[neighbor-1].RemoveNeighbor(node);
+                    }*/
+                    nodes.Remove(node); 
+                    break; 
+                }
             }
         }
 
@@ -114,6 +122,7 @@ namespace Grafy
                 copy.nodes[i].Neighbors = new List<int>(nodes[i].Neighbors);
                 copy.nodes[i].NumberOfNodesPointingToThisNode = nodes[i].NumberOfNodesPointingToThisNode;
                 copy.nodes[i].EdgeValues = new Dictionary<int, int>(nodes[i].EdgeValues);
+                copy.nodes[i].Value = nodes[i].Value;
             }
 
             return copy;
