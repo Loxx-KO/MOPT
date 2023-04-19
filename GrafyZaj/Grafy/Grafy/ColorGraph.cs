@@ -76,53 +76,6 @@ namespace Grafy
             {
                 Console.WriteLine((i + 1) + " color: " + copyGraph.GetNodeList()[i].Value);
             }
-            /*int colorCount = 0; //bc
-            int colors = 2; //b
-            bool test;
-
-            while (true)
-            {
-                if (colorCount > 0)              // Kombinację sprawdzamy, gdy zawiera najstarszą cyfrę
-                {
-                    test = true;
-                    for (int j = 0; j < nodesInGraph; j++)
-                    {
-                        curr = graph.GetNodeList()[j];
-                        foreach (int neighbor in graph.FindNode(curr.NodeNumber).Neighbors)
-                        {
-                            Node tmp = graph.FindNode(neighbor);
-                            if (color[j] == color[tmp.NodeNumber-1]) // Testujemy pokolorowanie
-                            {
-                                test = false; // Zaznaczamy porażkę
-                                break;        // Opuszczamy pętlę for
-                            }
-                        }
-                        if (!test) break; // Opuszczamy pętlę for
-                    }
-                    if (test) break;   // Kombinacja znaleziona, kończymy pętlę główną
-                }
-
-                while (true)         // Pętla modyfikacji licznika
-                {
-                    int i = 0;
-                    for (i = 0; i < nodesInGraph; i++)
-                    {
-                        color[i]++;     // Zwiększamy cyfrę
-                        if (color[i] == colors - 1) colorCount++;
-                        if (color[i] < colors) break;
-                        color[i] = 0;    // Zerujemy cyfrę
-                        colorCount--;
-                    }
-
-                    if (i < nodesInGraph) break; // Wychodzimy z pętli zwiększania licznika
-                    colors++;               // Licznik się przewinął, zwiększamy bazę
-                }
-            }
-
-            for (int i = 0; i < nodesInGraph; i++)
-            {
-                Console.WriteLine((i + 1) + " color: " + color[i]);
-            }*/
         }
     }
 }

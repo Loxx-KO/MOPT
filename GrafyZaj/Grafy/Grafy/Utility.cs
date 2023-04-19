@@ -205,7 +205,7 @@ namespace Grafy
             {
                 foreach(int neighbor in node.Neighbors) 
                 {
-                    matrix[((neighbor-1) - minV2Value), it] = node.EdgeValues[neighbor];
+                    matrix[node.NodeNumber-1, (neighbor-1) - v1.Count] = node.EdgeValues[neighbor];
                 }
                 it++;
             }

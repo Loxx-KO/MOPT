@@ -92,6 +92,42 @@ namespace Grafy
 
             Utility.Show2D_Matrix(graphMatrix, v1, v2);
 
+            int[,] markMatrix = Utility.GraphTo2D_Matrix(v1, v2);
+            for (int i = 0; i < v1.Count; i++)
+            {
+                for (int j = 0; j < v2.Count; j++)
+                {
+                    markMatrix[i, j] = 0;
+                }
+            }
+
+            int countZerosInRow;
+            for (int i = 0; i < v1.Count; i++)
+            {
+                countZerosInRow = 1;
+                for (int j = 0; j < v2.Count; j++)
+                {
+                    if(graphMatrix[i, j] == 0)
+                    {
+                        markMatrix[i, j] = countZerosInRow;
+                        countZerosInRow++;
+                    }
+                }
+
+                for (int j = 0; j < v2.Count; j++)
+                {
+                    if (markMatrix[i, j] > 1 || countZerosInRow == 2)
+                    {
+                        markMatrix[i, j] = 0;
+                    }
+                }
+            }
+
+            Console.WriteLine("MarkedMatrix: ");
+            Utility.Show2D_Matrix(markMatrix, v1, v2);
+
+
+
             int result = 0;
 
             for (int i = 0; i < v1.Count; i++)
