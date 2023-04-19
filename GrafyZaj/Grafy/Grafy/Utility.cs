@@ -111,7 +111,6 @@ namespace Grafy
 
             return true;
         }
-
         public static List<int> FindPath(Graph graph, int start, int finish)
         {
             int nodesInGraph = graph.GetNodeCount();
@@ -231,6 +230,27 @@ namespace Grafy
                 }
                 Console.WriteLine();
             }
+        }
+        public static void Show2D_Matrix_Graph(int[,] matrix, Graph graph)
+        {
+            Console.Write("# ");
+            for (int j = 0; j < graph.GetNodeCount(); j++)
+            {
+                Console.Write(graph.GetNodeList()[j].NodeNumber + " ");
+            }
+            Console.WriteLine();
+
+            for (int i = 0; i < graph.GetNodeCount(); i++)
+            {
+                Console.Write(graph.GetNodeList()[i].NodeNumber + " ");
+                for (int j = 0; j < graph.GetNodeCount(); j++)
+                {
+                    if (matrix[i,j] == int.MaxValue) { Console.Write("Inf ");  }
+                    else Console.Write(matrix[i, j] + " ");
+                }
+                Console.WriteLine();
+            }
+            Console.WriteLine();
         }
     }
 }

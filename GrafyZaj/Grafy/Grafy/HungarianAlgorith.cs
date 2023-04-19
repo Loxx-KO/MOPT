@@ -18,30 +18,6 @@ namespace Grafy
             }
             else return;
 
-            /*Graph copyGraphAlg = graph.CopyGraph();
-            List<Node> copyGraphAlgList = copyGraphAlg.GetNodeList();
-
-            List<Node> v1 = copyGraphAlg.GetNodeList();
-
-            for (int i = 0; i < graph.GetNodeCount(); i++)
-            {
-                if (copyGraph.GetNodeList()[i].Value == 1)
-                {
-                    int max = 0;
-                    foreach (KeyValuePair<int, int> pair in copyGraphAlgList[i].EdgeValues)
-                    {
-                        if(pair.Value > max)
-                        {
-                            max = pair.Value;
-                        }
-                        copyGraphAlgList[i].Value = max;
-                        v1.Add(copyGraphAlgList[i]);
-                    }
-                }
-            }
-            Console.WriteLine("Po dodaniu etykier poczatkowych");
-            copyGraphAlg.ShowGraphByNodes();*/
-
             List<Node> copyGraphAlgList = copyGraph.GetNodeList();
             List<Node> v1 = new List<Node>();
             List<Node> v2 = new List<Node>();
@@ -78,7 +54,7 @@ namespace Grafy
             {
                 for (int j = 0; j < v2.Count; j++)
                 {
-                    if(minVertical[i,0] > graphMatrix[i,j])
+                    if(minVertical[i,0] > graphMatrix[i,j] && graphMatrix[i, j] != int.MaxValue)
                     {
                         minVertical[i,0] = graphMatrix[i,j];
                     }
@@ -89,7 +65,7 @@ namespace Grafy
             {
                 for (int j = 0; j < v2.Count; j++)
                 {
-                    if(minVertical[i, 0] != int.MaxValue)
+                    if(minVertical[i, 0] != int.MaxValue && graphMatrix[i, j] != int.MaxValue)
                         graphMatrix[i, j] -= minVertical[i, 0];
                 }
             }
@@ -98,7 +74,7 @@ namespace Grafy
             {
                 for (int j = 0; j < v2.Count; j++)
                 {
-                    if (minHorizontal[0, j] > graphMatrix[i, j])
+                    if (minHorizontal[0, j] > graphMatrix[i, j] && graphMatrix[i,j] != int.MaxValue)
                     {
                         minHorizontal[0, j] = graphMatrix[i, j];
                     }
@@ -109,7 +85,7 @@ namespace Grafy
             {
                 for (int j = 0; j < v2.Count; j++)
                 {
-                    if (minHorizontal[0, j] != int.MaxValue)
+                    if (minHorizontal[0, j] != int.MaxValue && graphMatrix[i, j] != int.MaxValue)
                         graphMatrix[i,j] -= minHorizontal[0, j];
                 }
             }
