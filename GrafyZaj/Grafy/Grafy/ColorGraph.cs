@@ -23,17 +23,78 @@ namespace Grafy
 
             int nodesInGraph = graph.GetNodeCount();
             List<int> color = new List<int>(nodesInGraph);
+            List<int> assignList = new List<int>();
             for (int j = 0; j < nodesInGraph; j++)
             {
                 color.Add(0);
+                assignList.Add(0);
             }
 
             Graph tmp = copyGraph.CopyGraph();
             Node curr = tmp.GetNodeList()[0];
-            int coloredCount = 0;
+            int toBeColoredCount = 0;
             int currentColor = 1;
 
-            while(coloredCount < nodesInGraph) 
+            List<List<int>> zbioryNiezalezne = new List<List<int>>();
+            int nodesAssigned = 0;
+            List<int> zbior = new List<int>();
+            bool newMatchFound = false;
+
+            while (nodesAssigned < nodesInGraph)
+            {
+                curr = tmp.GetNodeList()[0];
+                newMatchFound = false;
+
+                for (int i = 0; i < tmp.GetNodeCount(); i++)
+                {
+                    if (assignList[tmp.GetNodeList()[i].NodeNumber-1] == 0)
+                    {
+                        curr = tmp.GetNodeList()[i];
+                        newMatchFound = true;
+                        break;
+                    }
+                }
+
+                if (newMatchFound)
+                {
+                    zbior.Add(curr.NodeNumber);
+                    assignList[curr.NodeNumber - 1] = 1;
+
+                    foreach (int neighbor in copyGraph.FindNode(curr.NodeNumber).Neighbors)
+                    {
+                        if (tmp.FindNode(neighbor) != null)
+                        {
+                            tmp.RemoveNode(neighbor);
+                        }
+                    }
+                }
+                if (!newMatchFound)
+                {
+                    List<int> zbiorKoncowy = zbior;
+                    nodesAssigned += zbiorKoncowy.Count;
+                    zbioryNiezalezne.Add(zbiorKoncowy);
+
+                    zbior = new List<int>();
+                    tmp = copyGraph.CopyGraph();
+                }
+            }
+
+            toBeColoredCount = zbioryNiezalezne.Count;
+            for (int i = 0; i < toBeColoredCount; i++)
+            {
+                List<int> maxZbior = ZnajdzMaxZbior(zbioryNiezalezne);
+                if (maxZbior.Count > 0)
+                {
+                    foreach (int nodeNum in maxZbior)
+                    {
+                        copyGraph.GetNodeList()[nodeNum - 1].Value = currentColor;
+                    }
+                    currentColor++;
+                    zbioryNiezalezne.Remove(maxZbior);
+                }
+            }
+
+            /*while(coloredCount < nodesInGraph) 
             {
                 curr = tmp.GetNodeList()[0];
                 for (int i = 0; i < tmp.GetNodeCount(); i++)
@@ -69,13 +130,29 @@ namespace Grafy
                     currentColor++;
                     tmp = copyGraph.CopyGraph();
                 }
-            }
+            }*/
 
             Console.WriteLine("Result: ");
             for (int i = 0; i < nodesInGraph; i++)
             {
                 Console.WriteLine((i + 1) + " color: " + copyGraph.GetNodeList()[i].Value);
             }
+        }
+
+        private static List<int> ZnajdzMaxZbior(List<List<int>> zbioryNiezalezne)
+        {
+            int max = 0;
+            List<int> zbiorMax = new List<int>();
+            foreach (List<int> zbior in zbioryNiezalezne)
+            {
+                if (zbior.Count > max)
+                {
+                    max = zbior.Count;
+                    zbiorMax = zbior;
+                }
+            }
+
+            return zbiorMax;
         }
     }
 }

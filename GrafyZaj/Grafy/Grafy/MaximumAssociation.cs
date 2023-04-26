@@ -9,7 +9,7 @@ namespace Grafy
 {
     internal class MaximumAssociation
     {
-        public static void MaxAssociationAlgorithm(Graph graph) 
+        public static Dictionary<int, int> MaxAssociationAlgorithm(Graph graph) 
         {
             Graph copyGraph = graph.CopyGraph();
 
@@ -19,7 +19,7 @@ namespace Grafy
             }
             else
             {
-                return;
+                return new Dictionary<int, int>();
             }
 
             Dictionary<int, int> match = new Dictionary<int, int>();
@@ -113,6 +113,17 @@ namespace Grafy
 
             Console.WriteLine("Skojarzenie maksymalne: ");
             PrintMatches(match, copyGraph);
+
+            Dictionary<int, int> finalMatches = new Dictionary<int, int>();
+            for (int i = 0; i < copyGraph.GetNodeCount(); i++)
+            {
+                if (copyGraph.GetNodeList()[i].Value == 1)
+                {
+                    finalMatches.Add(match.Keys.ToList()[i],match[i + 1]);
+                }
+            }
+
+            return finalMatches;
         }
 
         private static void PrintMatches(Dictionary<int, int> match, Graph copyGraph)

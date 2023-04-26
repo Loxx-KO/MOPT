@@ -9,18 +9,18 @@ namespace Grafy
         public static string fileName3 = "wegierski2.txt";
         static void Main(string[] args)
         {
-            Console.WriteLine("Max skojarzenie");
+            /*Console.WriteLine("Max skojarzenie");
             Graph graph1 = new Graph();
             graph1.ReadFile(fileName);
             graph1.ShowGraphByNodes();
-            //Euler.EulerMethod(graph1);
-            MaximumAssociation.MaxAssociationAlgorithm(graph1);
+            Euler.EulerMethod(graph1);
+            MaximumAssociation.MaxAssociationAlgorithm(graph1);*/
 
-            Console.WriteLine("Wegierski");
+            /*Console.WriteLine("Wegierski");
             Graph graph3 = new Graph();
             graph3.ReadFile(fileName3);
             graph3.ShowGraphByNodes();
-            HungarianAlgorith.HungarianAlgorithm(graph3);
+            HungarianAlgorith.HungarianAlgorithm(graph3);*/
 
             Console.WriteLine("Kolorowanie");
             Graph graph2 = new Graph();
