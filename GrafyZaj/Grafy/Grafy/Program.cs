@@ -4,7 +4,7 @@ namespace Grafy
 {
     class Program
     {
-        public static string fileName = "euler-yes.txt";
+        public static string fileName = "kombi_pod.txt";
         public static string fileName2 = "colorGraph.txt";
         public static string fileName3 = "wegierski2.txt";
         static void Main(string[] args)
@@ -20,18 +20,19 @@ namespace Grafy
             Graph graph3 = new Graph();
             graph3.ReadFile(fileName3);
             graph3.ShowGraphByNodes();
-            HungarianAlgorith.HungarianAlgorithm(graph3);*/
+            HungarianAlgorith.HungarianAlgorithm(graph3);
 
             Console.WriteLine("Kolorowanie");
             Graph graph2 = new Graph();
             graph2.ReadFile(fileName2);
             graph2.ShowGraphByNodes();
-            ColorGraph.ColorGraphApprox(graph2);
+            ColorGraph.ColorGraphApprox(graph2);*/
 
-            /*Graph graph3 = new Graph();
-            graph3.ReadFile(fileName3);
-            graph3.ShowGraphByNodes();
-            BranchAndBound.BranchAndBoundVersion(graph3);*/
+            Console.WriteLine("KombiBranchnBound");
+            Graph graph2 = new Graph();
+            graph2.ReadFile(fileName);
+            graph2.ShowGraphByNodes();
+            Kombi1.Kombi(graph2);
         }
     }
 }

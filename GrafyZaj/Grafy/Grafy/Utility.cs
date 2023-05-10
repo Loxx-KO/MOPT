@@ -252,5 +252,18 @@ namespace Grafy
             }
             Console.WriteLine();
         }
+        public static int[,] CopyMatrix(int[,] matrix, int size)
+        {
+            int[,] matrixOut = new int[size,size];
+            for (int i = 0; i < size; i++)
+            {
+                for (int j = 0; j < size; j++)
+                {
+                    matrixOut[i, j] = matrix[i, j];
+                }
+            }
+
+            return matrixOut;
+        }
     }
 }

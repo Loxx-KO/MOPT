@@ -10,35 +10,35 @@ namespace Grafy
     public class Euler
     {
 
-        public static void EulerMethod(Graph graph)
+        public static bool EulerMethod(Graph graph)
         {
             if (!Utility.CheckIfGraphIsConsistent(graph)) 
             { 
                 Console.WriteLine("niespojny graf!");
-                return;
+                return false;
             }
 
             if(graph.IsGraphIsDirected()) 
             {
-                Console.WriteLine("skierowany i spojny");
+                //Console.WriteLine("skierowany i spojny");
                 foreach (Node node in graph.GetNodeList())
                 {
                     if(node.Neighbors.Count != node.NumberOfNodesPointingToThisNode)
                     {
                         Console.WriteLine("Wierzcholek " + node.NodeNumber + " Ma inna liczbe krawedzi wchodzacych i wychodzacych!");
-                        return;
+                        return false;
                     }
                 }
             }
             else
             {
-                Console.WriteLine("nieskierowany i spojny");
+                //Console.WriteLine("nieskierowany i spojny");
                 foreach(Node node in graph.GetNodeList())
                 {
                     if(node.Neighbors.Count % 2 != 0)
                     {
                         Console.WriteLine("Nieparzysta liczba krawedzi z wierzcholka " + node.NodeNumber + "! Graf nie spelnia warunkow.");
-                        return;
+                        return false;
                     }
                 }
             }
@@ -73,6 +73,8 @@ namespace Grafy
                 cycleResult += node.NodeNumber + " ";
             }
             Console.WriteLine("Cykl: " + cycleResult);
+
+            return true;
         }
     }
 }
